@@ -77,7 +77,7 @@ RUN docker-php-ext-configure gmp \
     && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini 
 
 RUN apt-get update \ 
-    && apt-get install dirmngr --install-recommends \
+    && apt-get install -y dirmngr --install-recommends \
     && wget https://phar.io/releases/phive.phar \
     && wget https://phar.io/releases/phive.phar.asc \
     && chmod +x phive.phar \
