@@ -21,7 +21,7 @@ RUN apt-get update \
     && apt-get install -y apt-utils \
     && apt-get install -y unixodbc unixodbc-dev libicu-dev libgmp-dev libc-client-dev libkrb5-dev libldap2-dev libldb-dev \
     && apt-get install -y libgraphicsmagick1-dev libmagickcore-dev libmagickwand-dev libmcrypt-dev libmemcached-dev \
-    && apt-get install -y libpq-dev libpq5 libpspell-dev librecode-dev libtidy-dev libssh2-1-dev libyaml-dev \
+    && apt-get install -y libpq-dev libpq5 libpspell-dev librecode-dev libtidy-dev libssh2-1-dev libyaml-dev libssl-dev \
     && apt-get install -y nano vim htop telnet traceroute dnsutils iputils-ping bash-completion tmux \
     && rm -r /var/lib/apt/lists/*
 
@@ -63,8 +63,6 @@ RUN docker-php-ext-configure gmp \
     && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
     && pecl install imagick \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/imagick.ini \
-    && pecl install mcrypt-1.0.0 \
-    && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini \
     && pecl install memcached \
     && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
     && pecl install mongodb \ 
