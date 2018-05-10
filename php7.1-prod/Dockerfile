@@ -4,7 +4,7 @@
 # https://github.com/phalcon/dockerfiles
 #
 
-FROM webdevops/php-nginx:7.2
+FROM webdevops/php-nginx:7.1
 
 LABEL maintainer="Gamal Abdul Nasser <gamalanpro@gmail.com>"
 
