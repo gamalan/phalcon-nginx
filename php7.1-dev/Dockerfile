@@ -63,7 +63,7 @@ RUN docker-php-ext-configure gmp \
     && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
     && pecl install imagick \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/imagick.ini \
-    && pecl install mcrypt-1.0.1 \
+    && pecl install mcrypt-1.0.0 \
     && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini \
     && pecl install memcached \
     && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
