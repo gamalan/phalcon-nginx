@@ -21,7 +21,7 @@ RUN apt-get update \
     && apt-get install -y apt-utils \
     && apt-get install -y unixodbc unixodbc-dev libicu-dev libgmp-dev libc-client-dev libkrb5-dev libldap2-dev libldb-dev \
     && apt-get install -y libgraphicsmagick1-dev libmagickcore-dev libmagickwand-dev libmcrypt-dev libmemcached-dev \
-    && apt-get install -y libpq-dev libpq5 libpspell-dev librecode-dev libtidy-dev libssh2-1-dev libyaml-dev \
+    && apt-get install -y libpq-dev libpq5 libpspell-dev librecode-dev libtidy-dev libssh2-1-dev libyaml-dev libssl-dev \
     && apt-get install -y nano vim htop telnet traceroute dnsutils iputils-ping bash-completion tmux \
     && rm -r /var/lib/apt/lists/*
 
@@ -100,7 +100,8 @@ RUN apt-get update \
 RUN cp -R /artifacts/etc/php/7.1/mods-available/*.ini /usr/local/etc/php/conf.d \
     && cp -R /artifacts/usr/lib/php/20160303/*.so `php-config --extension-dir` \
     && php -m \
-    && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini
+    && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini \
+    && rm /usr/local/etc/php/conf.d/aerospike.ini
 
 ENV PROVISION_CONTEXT "production"
 

@@ -100,7 +100,8 @@ RUN apt-get update \
 RUN cp -R /artifacts/etc/php/7.1/mods-available/*.ini /usr/local/etc/php/conf.d \
     && cp -R /artifacts/usr/lib/php/20160303/*.so `php-config --extension-dir` \
     && php -m \
-    && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini
+    && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini \
+    && rm /usr/local/etc/php/conf.d/aerospike.ini
 
 ENV PROVISION_CONTEXT "development"
 
