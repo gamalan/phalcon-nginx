@@ -74,8 +74,7 @@ RUN docker-php-ext-configure gmp \
     && pecl install yaml \
     && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini \
     && pecl install apcu \
-    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini \
-    && curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
 
 RUN pecl install xdebug \
     && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
@@ -133,5 +132,15 @@ RUN apt-get autoremove -y \
     /var/tmp/* \
     /artifacts \
     /opt/docker/etc/php/fpm/pool.d/www.conf
+
+USER application
+
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash \
+    && export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \
+    && nvm install stable
+
+USER root
 
 EXPOSE 80 443 9000
