@@ -1,5 +1,5 @@
 NAME = gamalan/phalcon-nginx
-TAG = 7.3-dev
+TAG = 7.3-prod
 SHELL = /bin/bash
 PHP_VERSION= 7.3
 PHALCON_VERSION= 34
@@ -18,14 +18,14 @@ docker-build:
 	docker create --name extract $(ARTIFACTS_IMAGE)
 	docker cp extract:/artifacts ./artifacts
 	docker rm -f extract
-	docker build -t $(NAME):$(TAG) .
+	docker build -t $(NAME):php$(TAG)-phalcon$(PHALCON_VERSION) .
 
 release: build push
 
 push: do-push post-push
 
 do-push:
-	docker push $(NAME):$(TAG)
+	docker push $(NAME):php$(TAG)-phalcon$(PHALCON_VERSION)
 
 post-push:
 
