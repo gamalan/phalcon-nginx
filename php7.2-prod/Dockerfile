@@ -89,7 +89,7 @@ RUN apt-get update \
     && curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar \
     && chmod +x phpcbf.phar \
     && mv phpcbf.phar /usr/local/bin/phpcbf \
-    && curl -sOL http://static.phpmd.org/php/latest/phpmd.phar \
+    && curl -sOL https://github.com/phpmd/phpmd/releases/download/2.6.1/phpmd.phar \
     && chmod +x phpmd.phar \
     && mv phpmd.phar /usr/local/bin/phpmd \
     && curl -sOL http://www.phing.info/get/phing-latest.phar \
