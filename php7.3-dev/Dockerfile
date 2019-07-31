@@ -56,33 +56,30 @@ RUN docker-php-ext-configure gmp \
     && docker-php-ext-configure wddx \
     && docker-php-ext-install wddx \
     && docker-php-ext-configure xmlrpc \
-    && docker-php-ext-install xmlrpc \
-    && pecl install ssh2-alpha \
+    && docker-php-ext-install xmlrpc 
+
+COPY ssh2.tgz /opt/ssh2.tgz
+
+RUN pecl install /opt/ssh2.tgz \
     && echo "extension=ssh2.so" > /usr/local/etc/php/conf.d/ssh2.ini \
     && pecl install igbinary \
     && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
     && pecl install imagick \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/imagick.ini \
-    && pecl install mcrypt-1.0.1 \
+    && pecl install mcrypt-1.0.2 \
     && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini \
     && pecl install memcached \
-    && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
-    && pecl install mongodb \ 
-    && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini \
     && pecl install msgpack \
     && echo "extension=msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini \
     && pecl install yaml \
-    && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini \
-    && pecl install apcu \
-    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
+    && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini
 
 RUN pear channel-update pear.php.net \
-    && pear install Net_SMTP Net_Socket Mail_MIME Auth_SASL2 Crypt_GPG Net_LDAP2 \
-    && pear install channel://pear.horde.org/Horde_ManageSieve \
+    && pear install Net_SMTP Net_Socket Mail_MIME Net_Sieve Auth_SASL Crypt_GPG Net_LDAP2 \
     && pear install channel://pear.php.net/Net_IDNA2-0.2.0
 
 RUN pecl install xdebug \
-    && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
+    && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN apt-get update \ 
     && apt-get install -y dirmngr --install-recommends \
@@ -107,8 +104,8 @@ RUN curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
     && curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 
-RUN cp -R /artifacts/etc/php/7.2/mods-available/*.ini /usr/local/etc/php/conf.d \
-    && cp -R /artifacts/usr/lib/php/20170718/*.so `php-config --extension-dir` \
+RUN cp -R /artifacts/etc/php/7.3/mods-available/*.ini /usr/local/etc/php/conf.d \
+    && cp -R /artifacts/usr/lib/php/20180731/*.so `php-config --extension-dir` \
     && php -m \
     && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini
 
@@ -136,6 +133,7 @@ RUN apt-get autoremove -y \
     /tmp/* \
     /var/tmp/* \
     /artifacts \
+    /opt/ssh2.tgz \
     /opt/docker/etc/php/fpm/pool.d/www.conf
 
 USER application
