@@ -115,10 +115,10 @@ COPY bin/*.sh /opt/docker/provision/entrypoint.d/
 
 RUN mkdir -p /vendor \
     && composer --working-dir=/vendor require phalcon/devtools \
-    && ln -s /vendor/vendor/phalcon/devtools/phalcon.php /usr/local/bin/phalcon \
+    && ln -s /vendor/vendor/bin/phalcon /usr/local/bin/phalcon \
     && chmod ugo+x /usr/local/bin/phalcon \
     && composer --working-dir=/vendor require robmorgan/phinx  \
-    && ln -s /vendor/vendor/robmorgan/phinx/bin/phinx /usr/local/bin/phinx \
+    && ln -s /vendor/vendor/bin/phinx /usr/local/bin/phinx \
     && chmod ugo+x /usr/local/bin/phinx \
     # Custom provisions
     && chmod +x /opt/docker/provision/entrypoint.d/*.sh

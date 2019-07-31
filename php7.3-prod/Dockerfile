@@ -106,7 +106,7 @@ RUN cp -R /artifacts/etc/php/7.3/mods-available/*.ini /usr/local/etc/php/conf.d 
     && php -m \
     && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini
 
-ENV PROVISION_CONTEXT "development"
+ENV PROVISION_CONTEXT "production"
 
 # Deploy scripts/configurations
 COPY bin/*.sh /opt/docker/provision/entrypoint.d/
