@@ -87,17 +87,17 @@ RUN apt-get update \
     && wget https://phar.io/releases/phive.phar \
     && wget https://phar.io/releases/phive.phar.asc \
     && chmod +x phive.phar \
-    && mv phive.phar /usr/bin/phive \
-    && pecl channel-update pecl.php.net \
-    && curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
+    && mv phive.phar /usr/bin/phive 
+
+RUN curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
     && chmod +x phpcs.phar \
-    && mv phpcs.phar /usr/local/bin/phpcs \
+    && mv phpcs.phar /usr/local/bin/phpcs \ 
     && curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar \
     && chmod +x phpcbf.phar \
-    && mv phpcbf.phar /usr/local/bin/phpcbf \
-    && curl -sOL http://static.phpmd.org/php/latest/phpmd.phar \
+    && mv phpcbf.phar /usr/local/bin/phpcbf \ 
+    && curl -sOL https://github.com/phpmd/phpmd/releases/download/2.6.1/phpmd.phar \
     && chmod +x phpmd.phar \
-    && mv phpmd.phar /usr/local/bin/phpmd \
+    && mv phpmd.phar /usr/local/bin/phpmd \ 
     && curl -sOL http://www.phing.info/get/phing-latest.phar \
     && chmod +x phing-latest.phar \
     && mv phing-latest.phar /usr/local/bin/phing \
@@ -117,7 +117,7 @@ COPY bin/*.sh /opt/docker/provision/entrypoint.d/
 
 RUN mkdir -p /vendor \
     && composer --working-dir=/vendor require phalcon/devtools \
-    && ln -s /vendor/vendor/phalcon/devtools/phalcon.php /usr/local/bin/phalcon \
+    && ln -s /vendor/vendor/bin/phalcon /usr/local/bin/phalcon \
     && chmod ugo+x /usr/local/bin/phalcon \
     && composer --working-dir=/vendor require robmorgan/phinx  \
     && ln -s /vendor/vendor/robmorgan/phinx/bin/phinx /usr/local/bin/phinx \
