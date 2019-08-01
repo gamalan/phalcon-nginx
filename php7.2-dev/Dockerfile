@@ -4,7 +4,7 @@
 # https://github.com/phalcon/dockerfiles
 #
 
-FROM webdevops/php-nginx-dev:7.2
+FROM webdevops/php-nginx:7.2
 
 LABEL maintainer="Gamal Abdul Nasser <gamalanpro@gmail.com>"
 
@@ -67,16 +67,20 @@ RUN docker-php-ext-configure gmp \
     && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini \
     && pecl install memcached \
     && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
+    && pecl install mongodb \ 
+    && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini \
     && pecl install msgpack \
     && echo "extension=msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini \
+    && pecl install apcu \
+    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini \
     && pecl install yaml \
     && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini
 
 RUN pear install Net_SMTP Net_Socket Mail_MIME Auth_SASL Net_Sieve Crypt_GPG Net_LDAP \
     && pear install channel://pear.php.net/Net_IDNA2-0.2.0
 
-#RUN pecl install xdebug \
-#    && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
+RUN pecl install xdebug \
+    && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN apt-get update \ 
     && apt-get install -y dirmngr --install-recommends \
