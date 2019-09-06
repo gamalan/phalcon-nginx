@@ -1,9 +1,9 @@
 NAME = gamalan/phalcon-nginx
-TAG = 7.2-prod
-KLAY_TAG = ubuntu-16.04
+TAG = 7.2-dev
 SHELL = /bin/bash
 PHP_VERSION= 7.2
-ARTIFACTS_IMAGE = klay/mkimage:$(KLAY_TAG)-php-$(PHP_VERSION)
+PHALCON_VERSION= 34
+ARTIFACTS_IMAGE = gamalan/mkimage:php$(PHP_VERSION)-phalcon$(PHALCON_VERSION)
 
 .PHONY: pre-build docker-build post-build clean build release push do-push post-push
 
