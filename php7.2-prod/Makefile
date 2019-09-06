@@ -1,5 +1,5 @@
 NAME = gamalan/phalcon-nginx
-TAG = 7.2-dev
+TAG = 7.2-prod
 SHELL = /bin/bash
 PHP_VERSION= 7.2
 PHALCON_VERSION= 34

@@ -69,12 +69,8 @@ RUN docker-php-ext-configure gmp \
     && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini \
     && pecl install memcached \
     && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
-    && pecl install mongodb \ 
-    && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini \
     && pecl install msgpack \
     && echo "extension=msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini \
-    && pecl install apcu \
-    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini \
     && pecl install yaml \
     && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini
 
