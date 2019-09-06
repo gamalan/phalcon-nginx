@@ -8,6 +8,8 @@ FROM webdevops/php-nginx:7.2
 
 LABEL maintainer="Gamal Abdul Nasser <gamalanpro@gmail.com>"
 
+ARG REDIS_VERSION="4.3.0"
+
 COPY artifacts /artifacts
 
 ENV PATH=/root/composer/vendor/bin:$PATH \
@@ -75,6 +77,9 @@ RUN docker-php-ext-configure gmp \
     && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini \
     && pecl install apcu \
     && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini 
+
+RUN pecl uninstall redis \
+    && pecl install redis-${REDIS_VERSION}
 
 RUN pear channel-update pear.php.net \
     && pear install Net_SMTP Net_Socket Mail_MIME Net_Sieve Auth_SASL Crypt_GPG Net_LDAP2 \

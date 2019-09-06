@@ -4,9 +4,11 @@
 # https://github.com/phalcon/dockerfiles
 #
 
-FROM webdevops/php-nginx:7.2
+FROM webdevops/php-nginx-dev:7.2
 
 LABEL maintainer="Gamal Abdul Nasser <gamalanpro@gmail.com>"
+
+ARG REDIS_VERSION="4.3.0"
 
 COPY artifacts /artifacts
 
@@ -76,11 +78,11 @@ RUN docker-php-ext-configure gmp \
     && pecl install yaml \
     && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini
 
+RUN pecl uninstall redis \
+    && pecl install redis-${REDIS_VERSION}
+
 RUN pear install Net_SMTP Net_Socket Mail_MIME Auth_SASL Net_Sieve Crypt_GPG Net_LDAP \
     && pear install channel://pear.php.net/Net_IDNA2-0.2.0
-
-RUN pecl install xdebug \
-    && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN apt-get update \ 
     && apt-get install -y dirmngr --install-recommends \
