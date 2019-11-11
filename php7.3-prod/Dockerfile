@@ -8,8 +8,6 @@ FROM webdevops/php-nginx:7.3
 
 LABEL maintainer="Gamal Abdul Nasser <gamalanpro@gmail.com>"
 
-ARG REDIS_VERSION="4.3.0"
-
 COPY artifacts /artifacts
 
 ENV PATH=/root/composer/vendor/bin:$PATH \
@@ -76,9 +74,6 @@ RUN pecl install /opt/ssh2.tgz \
     && pecl install yaml \
     && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini
 
-RUN pecl uninstall redis \
-    && pecl install redis-${REDIS_VERSION}
-
 RUN pear channel-update pear.php.net \
     && pear install Net_SMTP Net_Socket Mail_MIME Net_Sieve Auth_SASL Crypt_GPG Net_LDAP2 \
     && pear install channel://pear.php.net/Net_IDNA2-0.2.0
@@ -137,15 +132,5 @@ RUN apt-get autoremove -y \
     /artifacts \
     /opt/ssh2.tgz \
     /opt/docker/etc/php/fpm/pool.d/www.conf
-
-USER application
-
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash \
-    && export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \
-    && nvm install stable
-
-USER root
 
 EXPOSE 80 443 9000
