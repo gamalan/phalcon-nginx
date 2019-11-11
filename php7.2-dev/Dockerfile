@@ -56,8 +56,11 @@ RUN docker-php-ext-configure gmp \
     && docker-php-ext-configure wddx \
     && docker-php-ext-install wddx \
     && docker-php-ext-configure xmlrpc \
-    && docker-php-ext-install xmlrpc \
-    && pecl install ssh2-alpha \
+    && docker-php-ext-install xmlrpc
+
+COPY ssh2.tgz /opt/ssh2.tgz
+
+RUN pecl install /opt/ssh2.tgz \
     && echo "extension=ssh2.so" > /usr/local/etc/php/conf.d/ssh2.ini \
     && pecl install igbinary \
     && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
