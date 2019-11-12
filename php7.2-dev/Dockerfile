@@ -8,6 +8,8 @@ FROM webdevops/php-nginx-dev:7.2
 
 LABEL maintainer="Gamal Abdul Nasser <gamalanpro@gmail.com>"
 
+ARG REDIS_VERSION="4.3.0"
+
 COPY artifacts /artifacts
 
 ENV PATH=/root/composer/vendor/bin:$PATH \
@@ -74,6 +76,9 @@ RUN pecl install /opt/ssh2.tgz \
     && echo "extension=msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini \
     && pecl install yaml \
     && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/yaml.ini
+
+RUN pecl uninstall redis \
+    && pecl install redis-${REDIS_VERSION}
 
 RUN pear install Net_SMTP Net_Socket Mail_MIME Auth_SASL Net_Sieve Crypt_GPG Net_LDAP \
     && pear install channel://pear.php.net/Net_IDNA2-0.2.0
