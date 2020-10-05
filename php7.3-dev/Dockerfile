@@ -21,7 +21,7 @@ RUN apt-get update \
     && apt-get install -y apt-utils \
     && apt-get install -y unixodbc unixodbc-dev libicu-dev libgmp-dev libc-client-dev libkrb5-dev libldap2-dev libldb-dev \
     && apt-get install -y libgraphicsmagick1-dev libmagickcore-dev libmagickwand-dev libmcrypt-dev libmemcached-dev \
-    && apt-get install -y libpq-dev libpq5 libpspell-dev librecode-dev libtidy-dev libssh2-1-dev libyaml-dev \
+    && apt-get install -y libpq-dev libpq5 libpspell-dev librecode-dev libtidy-dev libssh2-1-dev libyaml-dev libopendkim-dev \
     && apt-get install -y nano vim htop telnet traceroute dnsutils iputils-ping bash-completion tmux \
     && rm -r /var/lib/apt/lists/*
 
@@ -101,6 +101,12 @@ RUN curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
     && curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 
+RUN cd /usr/src/php/ext \
+    && git clone https://github.com/xdecock/php-opendkim.git \
+    && cd php-opendkim \
+    && phpize && make && make install \
+    && echo "extension=opendkim.so" > /usr/local/etc/php/conf.d/opendkim.ini 
+
 RUN cp -R /artifacts/etc/php/7.3/mods-available/*.ini /usr/local/etc/php/conf.d \
     && cp -R /artifacts/usr/lib/php/20180731/*.so `php-config --extension-dir` \
     && php -m \
@@ -112,7 +118,7 @@ ENV PROVISION_CONTEXT "development"
 COPY bin/*.sh /opt/docker/provision/entrypoint.d/
 
 RUN mkdir -p /vendor \
-    && composer --working-dir=/vendor require phalcon/devtools \
+    && composer --working-dir=/vendor require phalcon/devtools:v3.4.* \
     && ln -s /vendor/vendor/bin/phalcon /usr/local/bin/phalcon \
     && chmod ugo+x /usr/local/bin/phalcon \
     && composer --working-dir=/vendor require robmorgan/phinx  \
