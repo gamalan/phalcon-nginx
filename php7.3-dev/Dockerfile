@@ -104,7 +104,7 @@ RUN curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
 RUN cd /usr/src/php/ext \
     && git clone https://github.com/xdecock/php-opendkim.git \
     && cd php-opendkim \
-    && phpize && make && make install \
+    && phpize && ./configure && make && make install \
     && echo "extension=opendkim.so" > /usr/local/etc/php/conf.d/opendkim.ini 
 
 RUN cp -R /artifacts/etc/php/7.3/mods-available/*.ini /usr/local/etc/php/conf.d \
