@@ -64,8 +64,6 @@ RUN pecl install /opt/ssh2.tgz \
     && echo "extension=ssh2.so" > /usr/local/etc/php/conf.d/ssh2.ini \
     && pecl install igbinary \
     && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
-    && pecl install imagick \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/imagick.ini \
     && pecl install mcrypt-1.0.2 \
     && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini \
     && pecl install memcached \
@@ -124,6 +122,7 @@ RUN mkdir -p /vendor \
     && composer --working-dir=/vendor require robmorgan/phinx  \
     && ln -s /vendor/vendor/robmorgan/phinx/bin/phinx /usr/local/bin/phinx \
     && chmod ugo+x /usr/local/bin/phinx \
+    && composer --working-dir=/vendor require symfony/yaml  \
     # Custom provisions
     && chmod +x /opt/docker/provision/entrypoint.d/*.sh
 
