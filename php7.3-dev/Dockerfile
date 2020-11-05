@@ -99,16 +99,11 @@ RUN curl -sOL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
     && curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 
-RUN cd /usr/src/php/ext \
-    && git clone https://github.com/xdecock/php-opendkim.git \
-    && cd php-opendkim \
-    && phpize && ./configure && make && make install \
-    && echo "extension=opendkim.so" > /usr/local/etc/php/conf.d/opendkim.ini 
-
 RUN cp -R /artifacts/etc/php/7.3/mods-available/*.ini /usr/local/etc/php/conf.d \
     && cp -R /artifacts/usr/lib/php/20180731/*.so `php-config --extension-dir` \
     && php -m \
-    && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini
+    && echo "apc.enable_cli = 1" >> /usr/local/etc/php/conf.d/apcu.ini \
+    && sed -ri 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=1/g' /etc/ssl/openssl.cnf 
 
 ENV PROVISION_CONTEXT "development"
 
