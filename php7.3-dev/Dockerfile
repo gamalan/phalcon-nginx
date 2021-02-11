@@ -66,7 +66,6 @@ RUN pecl install /opt/ssh2.tgz \
     && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
     && pecl install mcrypt-1.0.2 \
     && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini \
-    && pecl install memcached \
     && pecl install msgpack \
     && echo "extension=msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini \
     && pecl install yaml \
