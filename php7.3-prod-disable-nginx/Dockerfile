@@ -4,7 +4,7 @@
 # https://github.com/phalcon/dockerfiles
 #
 
-FROM webdevops/php-nginx:7.3
+FROM webdevops/php:7.3
 
 LABEL maintainer="Gamal Abdul Nasser <gamalanpro@gmail.com>"
 
@@ -16,10 +16,6 @@ ENV PATH=/root/composer/vendor/bin:$PATH \
     COMPOSER_HOME=/root/composer \
     APPLICATION_PATH="/project" \
     DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get remove nginx -y \ 
-    && rm /opt/docker/bin/service.d/nginx.d/10-init.sh \
-    && rm /opt/docker/provision/entrypoint.d/20-nginx.sh 
 
 RUN apt-get update \
     && apt-get install -y apt-utils \
