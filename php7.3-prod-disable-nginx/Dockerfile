@@ -17,7 +17,9 @@ ENV PATH=/root/composer/vendor/bin:$PATH \
     APPLICATION_PATH="/project" \
     DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get remove nginx -y
+RUN apt-get remove nginx -y \ 
+    && rm /opt/docker/bin/service.d/nginx.d/10-init.sh \
+    && rm /opt/docker/provision/entrypoint.d/20-nginx.sh 
 
 RUN apt-get update \
     && apt-get install -y apt-utils \
