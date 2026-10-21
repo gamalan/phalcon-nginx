@@ -24,7 +24,7 @@ Pulled `gamalan/phalcon-nginx:php7.3-prod-phalcon34` and inspected it:
 |------------------|-----------|
 | OS               | `debian:bookworm-slim` (stable until ~2028; Sury still publishes `7.3.33-35` for bookworm as of **2026-10-21**) |
 | PHP              | **7.3.33-35** from `packages.sury.org/php` (`php7.3-fpm`, `php7.3-cli`, …) — `apt-get upgrade` picks up future Sury rebuilds |
-| nginx            | stock Debian nginx, vhost in `nginx/default.conf`, Phalcon rewrite included |
+| nginx            | stock Debian nginx, vhost in `nginx/default.conf`, Phalcon rewrite included. Custom conf via drop-ins — see §6 |
 | Phalcon          | **3.4.5** compiled from `phalcon/cphalcon` tag `v3.4.5` |
 | Zephir parser    | **1.7.0** compiled from `phalcon/php-zephir-parser` (last 1.x supporting PHP 7.x) |
 | Process model    | `supervisord`: php-fpm 7.3 + nginx, both workers as **`application` (1000:1000)** — same as old image |
@@ -65,16 +65,36 @@ php -v        # 7.3.33-35…
 php --ri phalcon   # 3.4.5
 ```
 
-## 4. Files
+## 6. Custom config drop-ins (no need to edit base files)
+
+| What | Repo location | Lands in image | Scope |
+|------|---------------|----------------|-------|
+| nginx http-level (`gzip`, rate limits, log formats) | `nginx/conf.d/*.conf` | `/etc/nginx/conf.d/` | whole `http {}` (stock Debian include) |
+| nginx server-level (extra `location`, auth, headers) | `nginx/app.d/*.conf` | `/etc/nginx/app.d/`, included at end of `server {}` in `nginx/default.conf` | this vhost only |
+| PHP settings (`upload_max_filesize`, `memory_limit`, …) | `php/extra/*.ini` | `/etc/php/7.3/{cli,fpm}/conf.d/` | CLI and FPM |
+| Full vhost replacement | `nginx/default.conf` | `/etc/nginx/sites-available/default` | this vhost |
+| PHP extension toggles | Sury `php7.3-*` packages / `mods-available` + `phpenmod` | — | image build |
+
+Conventions: files load alphabetically — prefix with `NN-` (`10-…`, `30-…`).
+`*.example` files are documentation; copy to the real name to enable.
+Build validates with `nginx -t`; active PHP inis are listed via `php --ini`.
+
+Runtime alternative (no rebuild): volume-mount over `/etc/nginx/conf.d/`,
+`/etc/nginx/app.d/`, or `/etc/php/7.3/{fpm,cli}/conf.d/` and reload
+(`nginx -s reload`; FPM picks up inis on restart).
 
 ```
 php7.3-sury-prod/
 ├── Dockerfile          # sury php7.3 + nginx + phalcon 3.4.5 build
 ├── Makefile            # build / run / shell / push
 ├── docker-compose.yml  # local run example
-├── nginx/default.conf  # vhost with Phalcon rewrite
+├── nginx/
+│   ├── default.conf      # vhost with Phalcon rewrite + app.d include
+│   ├── conf.d/           # http-level snippets → /etc/nginx/conf.d/
+│   └── app.d/            # server-level drop-ins → included in server {}
 ├── php/
-│   └── opcache.ini     # sane prod opcache defaults
+│   ├── opcache.ini       # sane prod opcache defaults (via phpenmod)
+│   └── extra/            # *.ini → /etc/php/7.3/{cli,fpm}/conf.d/
 ├── supervisord.conf    # php-fpm + nginx
 └── bin/entrypoint.sh   # prints versions, execs supervisord
 ```

@@ -1,0 +1,9 @@
+; EXAMPLE extra PHP settings drop-in, applied to BOTH cli and fpm SAPIs.
+; Enable: cp 99-local.ini.example 30-local.ini && rebuild
+; (or mount into /etc/php/7.3/fpm/conf.d/ and cli/conf.d/ at runtime).
+; Files load alphabetically — prefix with NN- (e.g. 30-uploads.ini).
+;
+; upload_max_filesize = 32M
+; post_max_size = 32M
+; memory_limit = 512M
+; date.timezone = Asia/Jakarta

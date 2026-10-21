@@ -134,19 +134,26 @@ RUN set -eux; \
 
 # -------------------------------------------------------------------- Config --
 COPY nginx/default.conf /etc/nginx/sites-available/default
+COPY nginx/conf.d/ /etc/nginx/conf.d/
+COPY nginx/app.d/ /etc/nginx/app.d/
 COPY php/opcache.ini /etc/php/7.3/mods-available/opcache-custom.ini
+COPY php/extra/ /tmp/php-extra/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN set -eux; \
     chmod +x /usr/local/bin/entrypoint.sh; \
     phpenmod -v 7.3 opcache-custom || true; \
+    if ls /tmp/php-extra/*.ini >/dev/null 2>&1; then \
+        for sapi in cli fpm; do cp /tmp/php-extra/*.ini /etc/php/7.3/$sapi/conf.d/; done; \
+    fi; \
     # nginx runs in foreground under supervisord; php-fpm likewise
     mkdir -p /run/php /var/log/supervisor /var/cache/nginx /var/log/nginx "$APPLICATION_PATH"; \
     chown -R application:application "$APPLICATION_PATH" /var/cache/nginx /var/log/nginx /run/php; \
     php -v; \
     php -m | sort; \
     nginx -v; \
+    nginx -t; \
     # drop build-only packages, keep runtime libs
     apt-get update; \
     apt-get purge -y php7.3-dev php-pear pkg-config git autoconf automake \

@@ -1,0 +1,8 @@
+# EXAMPLE http-level snippet (http {} scope: gzip, rate limits, log formats…).
+# Enable: cp 10-gzip.conf.example 10-gzip.conf && rebuild
+# (or mount into /etc/nginx/conf.d/ at runtime).
+#
+# gzip on;
+# gzip_vary on;
+# gzip_min_length 1024;
+# gzip_types text/css application/javascript application/json image/svg+xml;

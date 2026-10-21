@@ -1,0 +1,14 @@
+# EXAMPLE server-level drop-in, included at the end of the server {} block
+# in nginx/default.conf. Files load alphabetically — prefix with NN-.
+# Enable: cp 10-extra.conf.example 10-extra.conf && rebuild
+# (or mount into /etc/nginx/app.d/ at runtime).
+#
+# Extra health endpoint:
+# location = /healthz {
+#     access_log off;
+#     return 200 "ok\n";
+# }
+#
+# Security headers:
+# add_header X-Content-Type-Options nosniff always;
+# add_header X-Frame-Options SAMEORIGIN always;
