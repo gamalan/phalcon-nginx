@@ -46,7 +46,7 @@ Composer requires: `php>=7.2` + `ext-curl, ext-mbstring, ext-iconv, ext-json,
 | apcu | No direct `apc_*()` calls, but `config/cache.php` + `config/metadata.php` offer an `Apc` driver. `php7.3-apcu` installed for parity. |
 | imap | Real usage (`EmailParser.php`, `php-imap/php-imap` lib). Installed. |
 | tidy | Real usage (`HtmlPurifyPlugin.php`). Installed. |
-| redis / memcached | Sessions (`SESSION_DRIVER=redis` default), cache drivers, rate limits. phpredis **pinned to 5.3.7** via `pecl install redis-5.3.7` (Sury only ships 6.0.2 for php7.3). |
+| redis / memcached | Sessions (`SESSION_DRIVER=redis` default), cache drivers, rate limits. phpredis **pinned to 5.3.7** compiled from the release tarball (Sury only ships 6.0.2 for php7.3; pecl channel proved flaky). |
 | soap, xsl | No `SoapClient` / `XSLTProcessor` calls (string matches only). Installed anyway — cheap. |
 | mcrypt, ldap, odbc, pgsql, pspell | Kept from old image — cheap, avoids surprises in vendor libs. |
 | Web root         | `/app` (`/app/public` as docroot, same Phalcon layout as before) |
@@ -82,6 +82,15 @@ Build validates with `nginx -t`; active PHP inis are listed via `php --ini`.
 Runtime alternative (no rebuild): volume-mount over `/etc/nginx/conf.d/`,
 `/etc/nginx/app.d/`, or `/etc/php/7.3/{fpm,cli}/conf.d/` and reload
 (`nginx -s reload`; FPM picks up inis on restart).
+
+FPM + docroot defaults (no-502 out of the box):
+- PHP-FPM pool `[www]` listens on TCP `127.0.0.1:9000`, matching nginx
+  `fastcgi_pass` (same as old image; no socket owner/mode to mismatch).
+- Docroot follows `$APPLICATION_PATH` (default `/app`): `<path>/public` when
+  it contains `index.php` (kirimemail-appmain layout), else `<path>` itself.
+  `fastcgi_param APPLICATION_PATH` is rewritten to the same path.
+- Different mount, no config overrides needed: `-e APPLICATION_PATH=/project`
+  → docroot `/project/public` (or `/project` if it holds `index.php`).
 
 ```
 php7.3-sury-prod/

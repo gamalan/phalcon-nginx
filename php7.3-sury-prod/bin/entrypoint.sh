@@ -17,9 +17,17 @@ if [ "$(id -g "$APP_USER")" != "$APP_GID" ]; then
 fi
 
 sed -ri "s/^(user|group) = .*/\1 = $APP_USER/" /etc/php/7.3/fpm/pool.d/www.conf
+sed -ri "s/^listen = .*/listen = 127.0.0.1:9000/" /etc/php/7.3/fpm/pool.d/www.conf
 sed -ri "s/^user .*/user $APP_USER;/" /etc/nginx/nginx.conf
 
-mkdir -p "$APP_PATH"
+# Docroot follows APPLICATION_PATH: <path>/public when it holds index.php
+# (kirimemail-appmain layout), otherwise <path> itself.
+DOCROOT="$APP_PATH/public"
+[ -f "$DOCROOT/index.php" ] || DOCROOT="$APP_PATH"
+sed -ri "s|^([[:space:]]*)root .*;|\1root $DOCROOT;|" /etc/nginx/sites-available/default
+sed -ri "s|fastcgi_param APPLICATION_PATH .*;|fastcgi_param APPLICATION_PATH $APP_PATH;|" /etc/nginx/sites-available/default
+
+mkdir -p "$APP_PATH" "$DOCROOT"
 chown "$APP_USER:$APP_USER" "$APP_PATH" /run/php 2>/dev/null || true
 
 php -v

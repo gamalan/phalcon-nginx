@@ -117,19 +117,31 @@ RUN set -eux; \
 
 # ------------------------------------------------- application user (parity) --
 # Old image ran php-fpm + nginx workers as `application` (1000:1000).
+# FPM listens on TCP 127.0.0.1:9000 to match nginx fastcgi_pass (no-502 default,
+# same as old image; avoids unix-socket owner/mode mismatches entirely).
 RUN set -eux; \
     groupadd -g 1000 application; \
     useradd -u 1000 -g 1000 -m -s /bin/bash application; \
     sed -ri 's/^(user|group) = .*/\1 = application/' /etc/php/7.3/fpm/pool.d/www.conf; \
+    sed -ri 's|^listen = .*|listen = 127.0.0.1:9000|' /etc/php/7.3/fpm/pool.d/www.conf; \
     sed -ri 's/^user .*/user application;/' /etc/nginx/nginx.conf; \
-    grep -E '^(user|group)' /etc/php/7.3/fpm/pool.d/www.conf; \
+    grep -E '^(user|group|listen)' /etc/php/7.3/fpm/pool.d/www.conf; \
     grep '^user' /etc/nginx/nginx.conf
 
 # ---------------------------------------------------------- phpredis 5.3.7 --
-# Pinned via PECL (Sury only publishes 6.0.2 for php7.3). Defaults (no
-# igbinary/lzf) match Phalcon's default PHP serializer.
+# Pinned to the 5.3.7 release tarball (Sury only publishes 6.0.2 for php7.3).
+# NOTE: not via `pecl install` — pecl.php.net channel metadata is flaky
+# ("No releases available" despite successful channel-update). Same bits,
+# zero channel dependency. Defaults (no igbinary/lzf) match Phalcon's
+# default PHP serializer.
 RUN set -eux; \
-    printf '\n\n\n' | pecl install redis-5.3.7; \
+    curl -fsSL https://github.com/phpredis/phpredis/archive/5.3.7.tar.gz -o /tmp/phpredis.tar.gz; \
+    mkdir -p /tmp/phpredis && tar -xzf /tmp/phpredis.tar.gz -C /tmp/phpredis --strip-components=1; \
+    cd /tmp/phpredis; \
+    phpize7.3; \
+    ./configure --with-php-config=/usr/bin/php-config7.3; \
+    make -j"$(nproc)"; \
+    make install; \
     printf 'extension=redis.so\n' > /etc/php/7.3/mods-available/redis.ini; \
     for sapi in cli fpm; do \
         ln -sf ../../mods-available/redis.ini "/etc/php/7.3/$sapi/conf.d/20-redis.ini"; \
