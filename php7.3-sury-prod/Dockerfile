@@ -44,10 +44,11 @@ RUN set -eux; \
 #     fileinfo filter ftp gd gettext gmp hash iconv igbinary imagick imap intl
 #     json ldap libxml mbstring mcrypt memcached mongodb msgpack mysqli mysqlnd
 #     odbc openssl pcntl pcre PDO pdo_mysql pdo_pgsql pdo_sqlite pgsql phar
-#     posix readline redis session shmop SimpleXML soap sockets SPL sqlite3
+#     posix readline session shmop SimpleXML soap sockets SPL sqlite3
 #     standard sysvmsg sysvsem sysvshm tidy tokenizer xml xmlreader xmlwriter
 #     xsl yaml Zend OPcache zip zlib
-#   compiled from source below: phalcon 3.4.5 + zephir_parser (1.7.0)
+#   compiled from source below: phalcon 3.4.5 + zephir_parser (1.7.0) +
+#     phpredis 5.3.7 (pecl redis-5.3.7; Sury only ships 6.0.2 for php7.3)
 #   verified against kirimemail-appmain (2026-10-21), intentionally dropped:
 #     xmlrpc (0 usages — NOT required), aerospike (0 usages), handlersocketi,
 #     pinba, weakref, vips, ionCube Loader, ssh2, recode/wddx (removed upstream),
@@ -65,7 +66,7 @@ RUN set -eux; \
         php7.3-ldap php7.3-mbstring php7.3-mcrypt php7.3-memcached \
         php7.3-mongodb php7.3-msgpack php7.3-mysql php7.3-odbc \
         php7.3-opcache php7.3-pgsql php7.3-pspell php7.3-readline \
-        php7.3-redis php7.3-soap php7.3-sqlite3 php7.3-tidy \
+        php7.3-soap php7.3-sqlite3 php7.3-tidy \
         php7.3-xml php7.3-xsl php7.3-yaml php7.3-zip \
         php7.3-dev php-pear pkg-config git unzip zip nano vim htop \
         libpcre3-dev re2c autoconf automake libtool make g++ \
@@ -123,6 +124,18 @@ RUN set -eux; \
     sed -ri 's/^user .*/user application;/' /etc/nginx/nginx.conf; \
     grep -E '^(user|group)' /etc/php/7.3/fpm/pool.d/www.conf; \
     grep '^user' /etc/nginx/nginx.conf
+
+# ---------------------------------------------------------- phpredis 5.3.7 --
+# Pinned via PECL (Sury only publishes 6.0.2 for php7.3). Defaults (no
+# igbinary/lzf) match Phalcon's default PHP serializer.
+RUN set -eux; \
+    printf '\n\n\n' | pecl install redis-5.3.7; \
+    printf 'extension=redis.so\n' > /etc/php/7.3/mods-available/redis.ini; \
+    for sapi in cli fpm; do \
+        ln -sf ../../mods-available/redis.ini "/etc/php/7.3/$sapi/conf.d/20-redis.ini"; \
+    done; \
+    test "$(php -r 'echo phpversion("redis");')" = 5.3.7; \
+    php --ri redis | head -n 5
 
 # ------------------------------------------------------------------ Composer --
 RUN set -eux; \

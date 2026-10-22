@@ -46,7 +46,7 @@ Composer requires: `php>=7.2` + `ext-curl, ext-mbstring, ext-iconv, ext-json,
 | apcu | No direct `apc_*()` calls, but `config/cache.php` + `config/metadata.php` offer an `Apc` driver. `php7.3-apcu` installed for parity. |
 | imap | Real usage (`EmailParser.php`, `php-imap/php-imap` lib). Installed. |
 | tidy | Real usage (`HtmlPurifyPlugin.php`). Installed. |
-| redis / memcached | Sessions (`SESSION_DRIVER=redis` default), cache drivers, rate limits. Installed. |
+| redis / memcached | Sessions (`SESSION_DRIVER=redis` default), cache drivers, rate limits. phpredis **pinned to 5.3.7** via `pecl install redis-5.3.7` (Sury only ships 6.0.2 for php7.3). |
 | soap, xsl | No `SoapClient` / `XSLTProcessor` calls (string matches only). Installed anyway — cheap. |
 | mcrypt, ldap, odbc, pgsql, pspell | Kept from old image — cheap, avoids surprises in vendor libs. |
 | Web root         | `/app` (`/app/public` as docroot, same Phalcon layout as before) |
