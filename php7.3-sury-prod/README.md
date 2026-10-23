@@ -92,6 +92,15 @@ FPM + docroot defaults (no-502 out of the box):
 - Different mount, no config overrides needed: `-e APPLICATION_PATH=/project`
   → docroot `/project/public` (or `/project` if it holds `index.php`).
 
+Security defaults shipped in this image:
+- nginx server block: `X-Content-Type-Options nosniff`, `X-Frame-Options SAMEORIGIN`,
+  `Referrer-Policy no-referrer-when-downgrade`, `X-XSS-Protection 1; mode=block`,
+  `Permissions-Policy` (camera/mic/geolocation off) — all with `always`.
+- `server_tokens off` (`nginx/conf.d/00-security.conf`) and `expose_php = Off`
+  (`php/extra/10-security.ini`) hide version banners.
+- No default `Content-Security-Policy`: the app ships inline scripts a strict CSP
+  would break — scope it per-route via `nginx/app.d/` (see `10-extra.conf.example`).
+
 ```
 php7.3-sury-prod/
 ├── Dockerfile          # sury php7.3 + nginx + phalcon 3.4.5 build

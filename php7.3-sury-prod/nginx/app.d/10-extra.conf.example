@@ -9,6 +9,13 @@
 #     return 200 "ok\n";
 # }
 #
-# Security headers:
-# add_header X-Content-Type-Options nosniff always;
-# add_header X-Frame-Options SAMEORIGIN always;
+# Per-location headers (a location with its own add_header does NOT inherit
+# the server-level headers — repeat what's needed inside it):
+# location ~* \.(css|js|png|jpg|woff2?)$ {
+#     add_header X-Content-Type-Options nosniff always;
+#     add_header Cache-Control "public, max-age=31536000" always;
+# }
+#
+# Content-Security-Policy (NOT enabled by default: this app ships inline
+# scripts a strict CSP would break — scope and test per-route before enabling):
+# add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;" always;
