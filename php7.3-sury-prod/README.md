@@ -91,6 +91,8 @@ FPM + docroot defaults (no-502 out of the box):
   `fastcgi_param APPLICATION_PATH` is rewritten to the same path.
 - Different mount, no config overrides needed: `-e APPLICATION_PATH=/project`
   → docroot `/project/public` (or `/project` if it holds `index.php`).
+- Explicit web root (e.g. tracking domain): `-e WEB_ROOT=/project/track_public`
+  bypasses the derivation and uses that dir verbatim.
 
 Security defaults shipped in this image:
 - nginx server block: `X-Content-Type-Options nosniff`,

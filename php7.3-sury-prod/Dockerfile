@@ -23,6 +23,7 @@ LABEL php.version="7.3" \
 
 ENV DEBIAN_FRONTEND=noninteractive \
     APPLICATION_PATH="/app" \
+    WEB_ROOT="" \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/root/composer \
     PATH=/root/composer/vendor/bin:$PATH

@@ -20,10 +20,15 @@ sed -ri "s/^(user|group) = .*/\1 = $APP_USER/" /etc/php/7.3/fpm/pool.d/www.conf
 sed -ri "s/^listen = .*/listen = 127.0.0.1:9000/" /etc/php/7.3/fpm/pool.d/www.conf
 sed -ri "s/^user .*/user $APP_USER;/" /etc/nginx/nginx.conf
 
-# Docroot follows APPLICATION_PATH: <path>/public when it holds index.php
-# (kirimemail-appmain layout), otherwise <path> itself.
-DOCROOT="$APP_PATH/public"
-[ -f "$DOCROOT/index.php" ] || DOCROOT="$APP_PATH"
+# Docroot: explicit $WEB_ROOT wins (e.g. /project/track_public); otherwise it
+# follows APPLICATION_PATH — <path>/public when it holds index.php
+# (kirimemail-appmain layout), else <path> itself.
+if [ -n "${WEB_ROOT:-}" ]; then
+  DOCROOT="$WEB_ROOT"
+else
+  DOCROOT="$APP_PATH/public"
+  [ -f "$DOCROOT/index.php" ] || DOCROOT="$APP_PATH"
+fi
 sed -ri "s|^([[:space:]]*)root .*;|\1root $DOCROOT;|" /etc/nginx/sites-available/default
 sed -ri "s|fastcgi_param APPLICATION_PATH .*;|fastcgi_param APPLICATION_PATH $APP_PATH;|" /etc/nginx/sites-available/default
 
