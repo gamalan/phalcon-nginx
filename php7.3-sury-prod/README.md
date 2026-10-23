@@ -93,9 +93,11 @@ FPM + docroot defaults (no-502 out of the box):
   → docroot `/project/public` (or `/project` if it holds `index.php`).
 
 Security defaults shipped in this image:
-- nginx server block: `X-Content-Type-Options nosniff`, `X-Frame-Options SAMEORIGIN`,
+- nginx server block: `X-Content-Type-Options nosniff`,
   `Referrer-Policy no-referrer-when-downgrade`, `X-XSS-Protection 1; mode=block`,
   `Permissions-Policy` (camera/mic/geolocation off) — all with `always`.
+  No `X-Frame-Options` by default (framing policy varies per deployment —
+  set it via `nginx/app.d/` when decided).
 - `server_tokens off` (`nginx/conf.d/00-security.conf`) and `expose_php = Off`
   (`php/extra/10-security.ini`) hide version banners.
 - No default `Content-Security-Policy`: the app ships inline scripts a strict CSP
