@@ -102,6 +102,10 @@ Security defaults shipped in this image:
   set it via `nginx/app.d/` when decided).
 - `server_tokens off` (`nginx/conf.d/00-security.conf`) and `expose_php = Off`
   (`php/extra/10-security.ini`) hide version banners.
+- Static assets (`css|js|json|fonts|images…`) send
+  `Access-Control-Allow-Origin: *` so app/service-worker origins can fetch
+  them cross-origin (server-level headers are repeated inside that block
+  because nginx doesn't inherit `add_header` into locations).
 - `error_reporting` excludes `E_DEPRECATED`/`E_USER_DEPRECATED`
   (`php/extra/30-error-reporting.ini`) so deprecated calls (e.g. phpredis
   `setTimeout`) never log — but app code calling `error_reporting()` at
